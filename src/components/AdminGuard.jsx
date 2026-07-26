@@ -35,7 +35,11 @@ export const AdminGuard = ({ children }) => {
         await auth.signOut();
       }
     } catch (err) {
-      setError('Login failed: ' + err.message);
+      if (err.code === 'auth/unauthorized-domain' || err.message?.includes('unauthorized-domain')) {
+        setError(`Firebase Auth Security Error: Domain '${hostname}' is not authorized in Firebase Console. Please add '${hostname}' to Firebase Authentication -> Settings -> Authorized Domains.`);
+      } else {
+        setError('Login failed: ' + err.message);
+      }
     }
   };
 
@@ -74,7 +78,7 @@ export const AdminGuard = ({ children }) => {
   if (!user || user.email !== ADMIN_EMAIL) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', background: '#090B0E' }}>
-        <div className="glass-panel spatial-card" style={{ padding: '3rem', borderRadius: '28px', textAlign: 'center', maxWidth: '420px', width: '100%' }}>
+        <div className="glass-panel spatial-card" style={{ padding: '3rem', borderRadius: '28px', textAlign: 'center', maxWidth: '440px', width: '100%' }}>
           <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto', fontSize: '1.6rem', color: '#10B981' }}>
             <i className="ph ph-shield-check" />
           </div>
@@ -86,7 +90,7 @@ export const AdminGuard = ({ children }) => {
           </p>
 
           {error && (
-            <div style={{ padding: '0.75rem 1rem', borderRadius: '12px', background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', color: '#F87171', fontSize: '0.82rem', marginBottom: '1.5rem', textAlign: 'left' }}>
+            <div style={{ padding: '0.75rem 1rem', borderRadius: '12px', background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.3)', color: '#F87171', fontSize: '0.82rem', marginBottom: '1.5rem', textAlign: 'left', lineHeight: 1.5 }}>
               <i className="ph ph-warning" style={{ marginRight: '0.3rem' }} /> {error}
             </div>
           )}
