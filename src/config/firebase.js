@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getMessaging, getToken, isSupported } from 'firebase/messaging';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -15,3 +16,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+export const VAPID_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY;
+
+export const requestPushToken = async () => {
+  try {
+    const supported = await isSupported();
+    if (!supported) return null;
+    const messaging = getMessaging(app);
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+    return token;
+  } catch (err) {
+    return null;
+  }
+};
