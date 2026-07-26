@@ -66,14 +66,25 @@ export const AdminCPanel = () => {
         });
         const freshLocal = getLocalMessages();
         const msgMap = new Map();
-        [...freshLocal, ...firestoreMsgs].forEach(m => {
-          const key = (m.email || '') + '|' + (m.message || '').substring(0, 30);
-          if (!msgMap.has(key)) msgMap.set(key, m);
+        
+        // Add LocalStorage messages
+        freshLocal.forEach(m => {
+          const key = m.id || (m.email + '|' + (m.message || '').substring(0, 20));
+          msgMap.set(key, m);
         });
+
+        // Add Firestore messages (takes precedence and ensures all DB docs display)
+        firestoreMsgs.forEach(m => {
+          const key = m.firestoreDocId || m.id || (m.email + '|' + (m.message || '').substring(0, 20));
+          msgMap.set(key, m);
+        });
+
         const combined = Array.from(msgMap.values());
         combined.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         setMessages(combined);
-      }, () => {});
+      }, (err) => {
+        console.error("CPanel Firestore Snapshot Error:", err);
+      });
     } catch (e) {}
     return () => unsubscribe();
   }, []);
