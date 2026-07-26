@@ -3,11 +3,15 @@ import { auth } from '../config/firebase';
 import { GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from 'firebase/auth';
 
 const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
+const AUTHORIZED_DOMAINS = ['orildo.sbs', 'orildo.online', 'localhost', '127.0.0.1'];
 
 export const AdminGuard = ({ children }) => {
   const [user, setUser] = useState(null);
   const [checking, setChecking] = useState(true);
   const [error, setError] = useState('');
+  const hostname = window.location.hostname;
+
+  const isAuthorizedDomain = AUTHORIZED_DOMAINS.some(d => hostname === d || hostname.endsWith('.' + d));
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -19,6 +23,10 @@ export const AdminGuard = ({ children }) => {
 
   const handleLogin = async () => {
     setError('');
+    if (!isAuthorizedDomain) {
+      setError(`Unauthorized Domain (${hostname}). Admin login restricted to authorized domains.`);
+      return;
+    }
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
@@ -31,11 +39,31 @@ export const AdminGuard = ({ children }) => {
     }
   };
 
-  // Still checking auth state
+  if (!isAuthorizedDomain) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', background: '#090B0E', color: '#FFF' }}>
+        <div className="glass-panel spatial-card" style={{ padding: '3rem', borderRadius: '28px', textAlign: 'center', maxWidth: '440px', width: '100%' }}>
+          <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto', fontSize: '1.6rem', color: '#EF4444' }}>
+            <i className="ph ph-shield-warning" />
+          </div>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', color: '#FFF', marginBottom: '0.5rem' }}>
+            Unauthorized Domain Host
+          </h2>
+          <p style={{ color: '#94A3B8', fontSize: '0.9rem', marginBottom: '1.5rem', lineHeight: 1.6 }}>
+            Admin CPanel access is strictly restricted to <strong style={{ color: '#10B981' }}>orildo.sbs</strong> and <strong style={{ color: '#10B981' }}>orildo.online</strong>.
+          </p>
+          <div style={{ padding: '0.75rem 1rem', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', color: '#64748B', fontSize: '0.8rem', fontFamily: 'var(--font-mono)' }}>
+            Current Host: {hostname}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (checking) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ textAlign: 'center', color: 'var(--text-muted)' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#090B0E' }}>
+        <div style={{ textAlign: 'center', color: '#94A3B8' }}>
           <i className="ph ph-circle-notch" style={{ fontSize: '2rem', animation: 'spin 1s linear infinite' }} />
           <p style={{ marginTop: '1rem', fontFamily: 'var(--font-mono)', fontSize: '0.85rem' }}>Verifying credentials...</p>
         </div>
@@ -43,19 +71,18 @@ export const AdminGuard = ({ children }) => {
     );
   }
 
-  // Not logged in or wrong email
   if (!user || user.email !== ADMIN_EMAIL) {
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', background: '#090B0E' }}>
         <div className="glass-panel spatial-card" style={{ padding: '3rem', borderRadius: '28px', textAlign: 'center', maxWidth: '420px', width: '100%' }}>
           <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.5rem auto', fontSize: '1.6rem', color: '#10B981' }}>
             <i className="ph ph-shield-check" />
           </div>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', color: '#FFF', marginBottom: '0.5rem' }}>
             Admin Access
           </h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.6 }}>
-            Sign in with Google to access the Orildo CPanel. Restricted to authorized personnel only.
+          <p style={{ color: '#94A3B8', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.6 }}>
+            Sign in with Google to access the Orildo CPanel. Authorized domains: <span style={{ color: '#10B981', fontWeight: 600 }}>orildo.sbs</span> & <span style={{ color: '#10B981', fontWeight: 600 }}>orildo.online</span>
           </p>
 
           {error && (
@@ -71,14 +98,13 @@ export const AdminGuard = ({ children }) => {
             </span>
           </button>
 
-          <p style={{ marginTop: '1.5rem', fontSize: '0.75rem', color: 'var(--text-dim)', fontFamily: 'var(--font-mono)' }}>
-            Domain locked to authorized email
+          <p style={{ marginTop: '1.5rem', fontSize: '0.75rem', color: '#64748B', fontFamily: 'var(--font-mono)' }}>
+            Domain lock: orildo.sbs / orildo.online
           </p>
         </div>
       </div>
     );
   }
 
-  // Authorized — render children
   return children;
 };
