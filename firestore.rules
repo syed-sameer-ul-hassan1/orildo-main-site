@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /messages/{messageId} {
+      allow create: if request.resource.data.name is string
+                    && request.resource.data.name.size() < 100
+                    && request.resource.data.email is string
+                    && request.resource.data.email.size() < 150
+                    && request.resource.data.message is string
+                    && request.resource.data.message.size() < 5000;
+      allow read, delete: if request.auth != null 
+                          && request.auth.token.email == '0xs423.7@gmail.com';
+      allow update: if false;
+    }
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

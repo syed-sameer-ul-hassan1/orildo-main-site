@@ -1,0 +1,33 @@
+<svg width="497" height="243" viewBox="0 0 497 243" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sov-bg-grad" x1="0" y1="0" x2="497" y2="243" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#161A20" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#0F1115" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="sov-stroke-grad" x1="164" y1="65" x2="333" y2="179" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="0.5" stop-color="#9CA3AF"/>
+      <stop offset="1" stop-color="#10B981"/>
+    </linearGradient>
+    <linearGradient id="key-icon-grad" x1="229" y1="102" x2="267" y2="140" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#E5E7EB"/>
+    </linearGradient>
+    <filter id="sov-glow" x="144" y="45" width="209" height="154" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Glass Card Background -->
+  <rect width="497" height="243" rx="20" fill="url(#sov-bg-grad)" stroke="rgba(255, 255, 255, 0.16)" stroke-width="1.5"/>
+
+  <!-- Subtle Background Grid Overlay -->
+  <path d="M0 60H497M0 120H497M0 180H497M124 0V243M248 0V243M372 0V243" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- Outer Shield Aura -->
+  <rect x="164" y="65" width="169" height="114" rx="26" fill="#111827" stroke="url(#sov-stroke-grad)" stroke-width="3.5" filter="url(#sov-glow)"/>
+
+  <!-- Central Lock / Vault Icon -->
+  <path d="M248.5 102.5C258.993 102.5 267.5 111.007 267.5 121.5C267.5 131.993 258.993 140.5 248.5 140.5C238.007 140.5 229.5 131.993 229.5 121.5C229.5 111.007 238.007 102.5 248.5 102.5ZM248.5 114.875C247.672 114.875 247 115.547 247 116.375V131.75C247 132.578 247.672 133.25 248.5 133.25C249.328 133.25 250 132.578 250 131.75V116.375C250 115.547 249.328 114.875 248.5 114.875Z" fill="url(#key-icon-grad)" stroke="#111827" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

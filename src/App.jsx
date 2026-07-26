@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { SoundProvider } from './context/SoundContext';
 import { ThreeCanvas } from './components/ThreeCanvas';
@@ -10,6 +10,8 @@ import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { ChatBot } from './components/ChatBot';
 import { AssetPreloader } from './components/AssetPreloader';
+import { OfflineError } from './components/OfflineError';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 import { Home } from './pages/Home';
 import { OurStory } from './pages/OurStory';
@@ -19,6 +21,11 @@ import { Contact } from './pages/Contact';
 import { SecurityAudit } from './pages/SecurityAudit';
 import { Privacy } from './pages/Privacy';
 import { Terms } from './pages/Terms';
+import { NotFound } from './pages/NotFound';
+import { ServerError } from './pages/ServerError';
+import { AdminCPanel } from './pages/AdminCPanel';
+import { AdminGuard } from './components/AdminGuard';
+import { trackPageView } from './utils/analytics';
 
 const ScrollProgressLine = () => {
   useEffect(() => {
@@ -38,66 +45,77 @@ const ScrollProgressLine = () => {
   return <div id="scroll-progress-line" />;
 };
 
+const AppLayout = () => {
+  const location = useLocation();
+  const isAdmin = location.pathname.startsWith('/orildomainsite/');
+
+  useEffect(() => {
+    if (!isAdmin) {
+      trackPageView(location.pathname);
+    }
+  }, [location.pathname, isAdmin]);
+
+  if (isAdmin) {
+    return (
+      <Routes>
+        <Route path="/orildomainsite/3300625389422/admin" element={<AdminGuard><AdminCPanel /></AdminGuard>} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    );
+  }
+
+  return (
+    <div className="app-container">
+      <AssetPreloader />
+      <SplashScreen />
+      <ScrollProgressLine />
+      <CustomCursor />
+      <ThreeCanvas />
+      <Header />
+
+      <PageTransition>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/index.html" element={<Home />} />
+          <Route path="/our-story" element={<OurStory />} />
+          <Route path="/pages/our_story.html" element={<OurStory />} />
+          <Route path="/desktop" element={<Desktop />} />
+          <Route path="/pages/desktop.html" element={<Desktop />} />
+          <Route path="/mobile" element={<Mobile />} />
+          <Route path="/pages/mobile.html" element={<Mobile />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/pages/contact.html" element={<Contact />} />
+          <Route path="/security-audit" element={<SecurityAudit />} />
+          <Route path="/pages/security_audit.html" element={<SecurityAudit />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/pages/privacy.html" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/pages/terms.html" element={<Terms />} />
+
+          <Route path="/500" element={<ServerError />} />
+          <Route path="/404" element={<NotFound />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </PageTransition>
+
+      <OfflineError />
+      <ChatBot />
+      <Footer />
+    </div>
+  );
+};
+
 export const App = () => {
   return (
-    <ThemeProvider>
-      <SoundProvider>
-        <Router>
-          <div className="app-container">
-            {/* Background Asset & Font Preloader */}
-            <AssetPreloader />
-
-            {/* Animated Logo Splash Screen */}
-            <SplashScreen />
-
-            {/* Top Scroll Progress Line Indicator */}
-            <ScrollProgressLine />
-
-            {/* Custom 3D & Cursor Overlay Components */}
-            <CustomCursor />
-            <ThreeCanvas />
-
-            {/* Header Navigation */}
-            <Header />
-
-            {/* Router Viewport */}
-            <PageTransition>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/index.html" element={<Home />} />
-
-                <Route path="/our-story" element={<OurStory />} />
-                <Route path="/pages/our_story.html" element={<OurStory />} />
-
-                <Route path="/desktop" element={<Desktop />} />
-                <Route path="/pages/desktop.html" element={<Desktop />} />
-
-                <Route path="/mobile" element={<Mobile />} />
-                <Route path="/pages/mobile.html" element={<Mobile />} />
-
-                <Route path="/contact" element={<Contact />} />
-                <Route path="/pages/contact.html" element={<Contact />} />
-
-                <Route path="/security-audit" element={<SecurityAudit />} />
-                <Route path="/pages/security_audit.html" element={<SecurityAudit />} />
-
-                <Route path="/privacy" element={<Privacy />} />
-                <Route path="/pages/privacy.html" element={<Privacy />} />
-
-                <Route path="/terms" element={<Terms />} />
-                <Route path="/pages/terms.html" element={<Terms />} />
-              </Routes>
-            </PageTransition>
-
-            {/* On-Device Neural AI Chatbot Assistant */}
-            <ChatBot />
-
-            {/* Footer */}
-            <Footer />
-          </div>
-        </Router>
-      </SoundProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <SoundProvider>
+          <Router>
+            <AppLayout />
+          </Router>
+        </SoundProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 };
 

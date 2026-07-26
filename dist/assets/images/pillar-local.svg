@@ -1,0 +1,43 @@
+<svg width="497" height="243" viewBox="0 0 497 243" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="loc-bg-grad" x1="0" y1="0" x2="497" y2="243" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#161A20" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#0F1115" stop-opacity="0.98"/>
+    </linearGradient>
+    <linearGradient id="chip-stroke-grad" x1="194" y1="67" x2="304" y2="177" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="0.5" stop-color="#10B981"/>
+      <stop offset="1" stop-color="#38BDF8"/>
+    </linearGradient>
+    <linearGradient id="pin-grad" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#9CA3AF"/>
+      <stop offset="1" stop-color="#4B5563"/>
+    </linearGradient>
+    <filter id="chip-glow" x="174" y="47" width="150" height="150" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Glass Card Background -->
+  <rect width="497" height="243" rx="20" fill="url(#loc-bg-grad)" stroke="rgba(255, 255, 255, 0.16)" stroke-width="1.5"/>
+
+  <!-- Subtle Circuit Traces Background -->
+  <path d="M0 60H497M0 120H497M0 180H497M124 0V243M248 0V243M372 0V243" stroke="rgba(255, 255, 255, 0.05)" stroke-width="1" stroke-dasharray="4 4"/>
+
+  <!-- CPU Chip Pins -->
+  <rect x="226" y="47" width="10" height="149" rx="2" fill="url(#pin-grad)"/>
+  <rect x="244" y="47" width="10" height="149" rx="2" fill="url(#pin-grad)"/>
+  <rect x="262" y="47" width="10" height="149" rx="2" fill="url(#pin-grad)"/>
+  <rect x="174.45" y="109" width="10" height="149" rx="2" transform="rotate(-90 174.45 109)" fill="url(#pin-grad)"/>
+  <rect x="174.225" y="126.999" width="10" height="149" rx="2" transform="rotate(-90 174.225 126.999)" fill="url(#pin-grad)"/>
+  <rect x="174" y="144.997" width="10" height="149" rx="2" transform="rotate(-90 174 144.997)" fill="url(#pin-grad)"/>
+
+  <!-- Central Silicon CPU Core Box -->
+  <rect x="194" y="67" width="110" height="110" rx="24" fill="#111827" stroke="url(#chip-stroke-grad)" stroke-width="6" filter="url(#chip-glow)"/>
+
+  <!-- Inner Micro-Architecture Lines -->
+  <rect x="214" y="87" width="70" height="70" rx="14" fill="none" stroke="rgba(255, 255, 255, 0.25)" stroke-width="2" stroke-dasharray="6 3"/>
+  <circle cx="249" cy="122" r="14" fill="#10B981" fill-opacity="0.85"/>
+  <circle cx="249" cy="122" r="6" fill="#FFFFFF"/>
+</svg>
