@@ -1,0 +1,234 @@
+/* Orildo Technology - Animation System */
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(1.5deg);
+  }
+}
+
+@keyframes floatMedium {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateY(-25px) rotate(-3deg) scale(1.02);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(1000%);
+  }
+}
+
+@keyframes borderRotate {
+  0% {
+    border-image-source: linear-gradient(0deg, var(--border-subtle), var(--border-glow));
+  }
+  50% {
+    border-image-source: linear-gradient(180deg, var(--border-subtle), var(--border-glow));
+  }
+  100% {
+    border-image-source: linear-gradient(360deg, var(--border-subtle), var(--border-glow));
+  }
+}
+
+.animate-float {
+  animation: floatSlow 6s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: floatMedium 8s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 4s ease-in-out infinite;
+}
+
+/* Magnetic Button Glow */
+.btn-magnetic {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.85rem;
+  border-radius: 9999px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  color: #0F1115;
+  background: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+  cursor: pointer;
+  overflow: hidden;
+  transition: all var(--transition-smooth);
+  text-decoration: none;
+}
+
+.btn-magnetic:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 0 35px rgba(255, 255, 255, 0.6), inset 0 1px 2px rgba(255, 255, 255, 1);
+}
+
+.btn-secondary-glass {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1.85rem;
+  border-radius: 9999px;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  text-decoration: none;
+}
+
+.btn-secondary-glass:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--border-hover);
+  color: #FFFFFF;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Heavy Drop Splash Screen System */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--bg-dark);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 1;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: all;
+}
+
+.splash-screen.fade-out {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+.splash-viewport {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
+.splash-icon-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
+  z-index: 1;
+}
+
+.splash-viewport.dropped .splash-icon-layer {
+  opacity: 0.15;
+  transform: translate(-50%, -50%) scale(1.22);
+}
+
+.splash-icon-stroke-svg {
+  width: 360px;
+  height: 386px;
+}
+
+@media (max-width: 600px) {
+  .splash-icon-stroke-svg {
+    width: 240px;
+    height: 257px;
+  }
+}
+
+.splash-icon-stroke-svg > path {
+  fill: transparent;
+}
+
+/* Explicitly preserve mask path fill */
+.splash-icon-stroke-svg mask path {
+  fill: white !important;
+}
+
+.splash-name-drop-layer {
+  position: relative;
+  z-index: 2;
+  opacity: 0;
+  transform: scale(2.2) translateY(-100px);
+  filter: blur(12px);
+  transition: opacity 0.5s ease, transform 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.28), filter 0.4s ease;
+  width: min(540px, 85vw);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.splash-viewport.dropped .splash-name-drop-layer {
+  opacity: 1;
+  transform: scale(1) translateY(0);
+  filter: blur(0px);
+}
+
+.splash-heavy-drop-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 35px rgba(255, 255, 255, 0.5));
+}
+
+/* Light Mode Splash Screen Overrides */
+[data-theme="light"] .splash-screen {
+  background: #F3F4F6 !important;
+}
+
+[data-theme="light"] .splash-icon-stroke-svg path[stroke] {
+  stroke: #111827 !important;
+}
+
+[data-theme="light"] .splash-icon-stroke-svg mask path {
+  fill: white !important;
+}
+
+[data-theme="light"] .splash-heavy-drop-img {
+  filter: brightness(0) drop-shadow(0 0 25px rgba(0, 0, 0, 0.15)) !important;
+}
+
+[data-theme="light"] .splash-viewport.dropped .splash-icon-layer {
+  opacity: 0.12 !important;
+}
