@@ -61,11 +61,15 @@ export const Contact = () => {
       dateStr: new Date().toLocaleString()
     };
 
+    // Primary: Always save to localStorage
     try {
       const existing = JSON.parse(localStorage.getItem('orildo_contact_messages') || '[]');
       localStorage.setItem('orildo_contact_messages', JSON.stringify([newMsg, ...existing]));
-    } catch (e) {}
+    } catch (e) {
+      console.warn("LocalStorage save warning:", e);
+    }
 
+    // Secondary: Write to Firestore database
     try {
       await addDoc(collection(db, 'messages'), {
         name: newMsg.name,
@@ -76,7 +80,9 @@ export const Contact = () => {
         dateStr: newMsg.dateStr,
         timestamp: serverTimestamp()
       });
-    } catch (err) {}
+    } catch (err) {
+      console.error("Firestore submission error:", err);
+    }
 
     setLoading(false);
     setSubmitted(true);
