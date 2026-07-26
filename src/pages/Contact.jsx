@@ -72,11 +72,12 @@ export const Contact = () => {
     // Secondary: Write to Firestore database
     try {
       await addDoc(collection(db, 'messages'), {
+        id: newMsg.id,
         name: newMsg.name,
         email: newMsg.email,
         scope: newMsg.scope,
         message: newMsg.message,
-        createdAt: newMsg.createdAt,
+        createdAt: Number(newMsg.createdAt),
         dateStr: newMsg.dateStr,
         timestamp: serverTimestamp()
       });

@@ -50,7 +50,20 @@ export const AdminCPanel = () => {
     try {
       const colRef = collection(db, 'messages');
       unsubscribe = onSnapshot(colRef, (snapshot) => {
-        const firestoreMsgs = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        const firestoreMsgs = snapshot.docs.map(d => {
+          const data = d.data();
+          return {
+            id: data.id || d.id,
+            firestoreDocId: d.id,
+            name: data.name || 'Anonymous',
+            email: data.email || '',
+            scope: data.scope || 'general',
+            message: data.message || '',
+            createdAt: data.createdAt || Date.now(),
+            dateStr: data.dateStr || (data.timestamp?.toDate ? data.timestamp.toDate().toLocaleString() : new Date().toLocaleString()),
+            ...data
+          };
+        });
         const freshLocal = getLocalMessages();
         const msgMap = new Map();
         [...freshLocal, ...firestoreMsgs].forEach(m => {
